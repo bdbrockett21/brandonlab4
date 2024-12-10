@@ -1,57 +1,35 @@
-# Makefile for OS Programming Lab Memory Management Project
+# Makefile for the translate program
 
-# Compiler
+# Compiler and flags
 CC = gcc
+CFLAGS = -Wall -g
 
-# Compiler flags
-CFLAGS = -Wall -Wextra -std=c99 -g
-LDFLAGS = 
-
-# Target executable name
-TARGET = memory_manager
+# Executable name
+EXEC = translate
 
 # Source files
-SRCS = address.c
-
-# Object files (generated from source files)
-OBJS = $(SRCS:.c=.o)
+SOURCES = address.c main.c stat.c
 
 # Header files
 HEADERS = lab4.h
 
+# Object files
+OBJECTS = $(SOURCES:.c=.o)
+
 # Default target
-all: $(TARGET)
+all: $(EXEC)
 
-# Linking the final executable
-$(TARGET): $(OBJS)
-	@echo "Linking $@"
-	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+# Linking the executable
+$(EXEC): $(OBJECTS)
+	$(CC) $(CFLAGS) -o $(EXEC) $(OBJECTS)
 
-# Compiling source files to object files
+# Compiling source files into object files
 %.o: %.c $(HEADERS)
-	@echo "Compiling $<"
 	$(CC) $(CFLAGS) -c $< -o $@
-
-# Run the program
-run: $(TARGET)
-	@echo "Running $(TARGET)"
-	./$(TARGET)
 
 # Clean up build artifacts
 clean:
-	@echo "Cleaning up..."
-	rm -f $(OBJS) $(TARGET)
+	rm -f $(OBJECTS) $(EXEC)
 
-# Rebuild everything from scratch
-rebuild: clean all
-
-# Debug target
-debug: CFLAGS += -DDEBUG
-debug: all
-
-# Valgrind memory check
-memcheck: $(TARGET)
-	valgrind --leak-check=full --show-leak-kinds=all ./$(TARGET)
-
-# Phony targets (targets that don't represent files)
-.PHONY: all clean run rebuild debug memcheck
+# Phony targets
+.PHONY: all clean
